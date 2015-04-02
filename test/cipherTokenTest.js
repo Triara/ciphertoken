@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert'),
-    cipherToken = require('../cipherToken');
+    cipherToken = require('../lib/index.js');
 
 const USER_ID = 'John Spartan';
 const DATA = {field1:'a1b2c3d4e5f6'};

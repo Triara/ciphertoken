@@ -2,7 +2,7 @@
   "name": "ciphertoken",
   "version": "0.9.5",
   "description": "Ciphered accessToken management",
-  "main": "cipherToken.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "node ./node_modules/.bin/mocha --harmony test/*"
   },
