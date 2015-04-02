@@ -1,4 +1,4 @@
---WORK IN PROGRESS--
+[![Build Status](https://travis-ci.org/frikiplanet/ciphertoken.svg?branch=master)](https://travis-ci.org/frikiplanet/ciphertoken)
 
 cipherToken
 ===========
