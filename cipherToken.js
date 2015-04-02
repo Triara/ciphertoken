@@ -1,6 +1,8 @@
-var crypto = require('crypto');
+"use strict";
 
-var ERRORS = {
+const crypto = require('crypto');
+
+const ERRORS = {
     settingsRequired: {
         err: 'Settings required',
         des: 'Settings must have at least cipherKey and firmKey'
@@ -49,11 +51,12 @@ function enrichSettings(settings, ckb){
     } else if (!settings.hasOwnProperty('firmKey')) {
         return ckb(ERRORS.firmKeyRequired);
     }
-    for (var p in DEFAULT_SETTINGS){
+    for (let p in DEFAULT_SETTINGS){
         if (settings.hasOwnProperty(p) == false) {
             settings[p] = DEFAULT_SETTINGS[p];
         }
     }
+
     ckb(null, settings);
 }
 
@@ -62,7 +65,7 @@ function isEmpty(obj) {
 }
 
 function serialize(data, cbk) {
-    var res;
+    let res;
     try {
         res = JSON.stringify(data);
     } catch (e) {
@@ -72,13 +75,13 @@ function serialize(data, cbk) {
 }
 
 function unserialize(data, cbk) {
-    var res;
+    let res;
     try {
         res = JSON.parse(data);
     } catch (e) {
         return cbk(ERRORS.unserializationError);
     }
-    cbk(null,res);
+    cbk(null, res);
 }
 
 function standarizeToken(token){
@@ -90,7 +93,7 @@ function standarizeToken(token){
 }
 
 function firmToken(settings, userId, expiresAtTimestamp, data, cbk) {
-    var dataToSerialize = {
+    const dataToSerialize = {
         'userId': userId,
         'expiresAtTimestamp': expiresAtTimestamp,
         'data': data
@@ -100,7 +103,7 @@ function firmToken(settings, userId, expiresAtTimestamp, data, cbk) {
         if(err){
             return cbk(err, null);
         }
-        var firmedToken = crypto.createHmac(settings.hmacAlgorithm, settings.firmKey)
+        const firmedToken = crypto.createHmac(settings.hmacAlgorithm, settings.firmKey)
             .update(notFirmedToken)
             .digest(settings.hmacDigestEncoding);
         cbk(null, firmedToken);
@@ -119,8 +122,8 @@ function checkTokenFirm(settings, cipheredToken, cbk){
 }
 
 function decipherToken(settings, cipheredToken, cbk){
-    var decipher = crypto.createDecipher(settings.cipherAlgorithm, settings.cipherKey);
-    var decodedToken = decipher.update(cipheredToken, settings.tokenEncoding, settings.plainEncoding);
+    const decipher = crypto.createDecipher(settings.cipherAlgorithm, settings.cipherKey);
+    let decodedToken = decipher.update(cipheredToken, settings.tokenEncoding, settings.plainEncoding);
     if (!decodedToken){
         return cbk(ERRORS.badToken, null);
     }
@@ -145,16 +148,16 @@ function createToken(settings, userId, sessionId, data, cbk) {
         if(err){
             return cbk(err, null);
         }
-        var expiresAtTimestamp = new Date().getTime() + settings.tokenExpirationMinutes*60*1000;
+        const expiresAtTimestamp = new Date().getTime() + settings.tokenExpirationMinutes*60*1000;
         data = data || {};
 
         firmToken(settings, userId, expiresAtTimestamp, data, function(err, firm){
             if(err){
                 return cbk(err, null);
             }
-            var cipher = crypto.createCipher(settings.cipherAlgorithm, settings.cipherKey);
+            const cipher = crypto.createCipher(settings.cipherAlgorithm, settings.cipherKey);
 
-            var tokenSet = {
+            const tokenSet = {
                 userId: userId,
                 expiresAtTimestamp: expiresAtTimestamp,
                 data: data,
@@ -172,7 +175,7 @@ function createToken(settings, userId, sessionId, data, cbk) {
                 if(err){
                     return cbk(err, null);
                 }
-                var encodedData = cipher.update(notFirmedToken, settings.plainEncoding, settings.tokenEncoding);
+                const encodedData = cipher.update(notFirmedToken, settings.plainEncoding, settings.tokenEncoding);
 
                 cbk(null, standarizeToken(encodedData + cipher.final(settings.tokenEncoding)));
             });
@@ -200,7 +203,7 @@ function decodeToken(settings, cipheredToken, cbk){
                     return cbk(ERRORS.badCredentials, null);
                 }
 
-                var tokenSet = {
+                const tokenSet = {
                     userId: token.userId,
                     expiresAtTimestamp: token.expiresAtTimestamp,
                     data: token.data

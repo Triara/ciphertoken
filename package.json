@@ -4,7 +4,7 @@
   "description": "Ciphered accessToken management",
   "main": "cipherToken.js",
   "scripts": {
-    "test": "mocha test/*"
+    "test": "node ./node_modules/.bin/mocha --harmony test/*"
   },
   "repository": {
     "type": "git",
@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/frikiplanet/ciphertoken",
   "dependencies": {
-    "debug": "~0.7.4"
+    "debug": "0.7.4"
   },
   "devDependencies": {
-    "mocha": "^2.0.1"
+    "mocha": "2.0.1"
   },
   "engines": {
     "node": ">=0.10.26"

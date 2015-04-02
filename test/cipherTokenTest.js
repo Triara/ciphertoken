@@ -1,26 +1,28 @@
-var assert = require('assert');
-var cipherToken = require('../cipherToken');
+'use strict';
+
+const assert = require('assert'),
+    cipherToken = require('../cipherToken');
 
 const USER_ID = 'John Spartan';
 const DATA = {field1:'a1b2c3d4e5f6'};
 
-var settings = {
+const settings = {
     cipherKey: 'myCipherKey123',
     firmKey:  'myFirmKey123'
 };
 
-var settingsWithSessionId = {
+const settingsWithSessionId = {
     cipherKey: 'myCipherKey123',
     firmKey:  'myFirmKey123',
     enableSessionId: true
 };
 
-var settingsWithDifferentFirmKey = {
+const settingsWithDifferentFirmKey = {
     cipherKey: 'myCipherKey123',
     firmKey: 'anotherFirmKey'
 };
 
-var settingsWithDifferentCipherKey = {
+const settingsWithDifferentCipherKey = {
     cipherKey: 'anotherCipherKey123',
     firmKey:  'myFirmKey123'
 };
@@ -53,7 +55,7 @@ describe('Token generation', function() {
     });
 
     it('ExpiresInTimestamp should be greater than actual time according to settings', function () {
-        var customSettings = {
+        const customSettings = {
             cipherKey: 'myCipherKey123',
             firmKey: 'anotherFirmKey',
             tokenExpirationMinutes : 2
@@ -61,9 +63,9 @@ describe('Token generation', function() {
         cipherToken.encode(customSettings, USER_ID, null, DATA, function(err, token) {
             cipherToken.decode(customSettings, token, function(err, tokenSet){
                 assert.equal(err, null);
-                var expected = new Date().getTime() + customSettings.tokenExpirationMinutes*60*1000;
-                var expectedRounded = (expected/(60*1000)).toFixed();
-                var actualRounded = (tokenSet.expiresAtTimestamp/(60*1000)).toFixed();
+                const expected = new Date().getTime() + customSettings.tokenExpirationMinutes*60*1000,
+                    expectedRounded = (expected/(60*1000)).toFixed(),
+                    actualRounded = (tokenSet.expiresAtTimestamp/(60*1000)).toFixed();
 
                 assert.equal(expectedRounded, actualRounded);
             });
@@ -74,7 +76,7 @@ describe('Token generation', function() {
 
 describe('Error description', function () {
     it('Should return an error when submitted token is invalid', function() {
-        var token = 'invalid token';
+        const token = 'invalid token';
         cipherToken.decode(settings, token, function(err, tokenSet) {
             assert.equal(tokenSet, null);
             assert.notEqual(err, null);
@@ -150,8 +152,8 @@ describe('SessionId support', function() {
     });
 
     it('Session ids should be different for different tokens', function() {
-        var firstSessionId = '';
-        var secondSessionId = '';
+        let firstSessionId = '',
+            secondSessionId = '';
 
         cipherToken.encode(settingsWithSessionId, 'first user', null, DATA, function(err, token){
             cipherToken.decode(settingsWithSessionId, token, function(err, tokenSet){
@@ -168,7 +170,7 @@ describe('SessionId support', function() {
     });
 
     it('New token can be created with a given sessionId', function(){
-        var sessionId = 'abc123456';
+        const sessionId = 'abc123456';
         cipherToken.encode(settingsWithSessionId, USER_ID, sessionId, DATA, function(err, token){
             cipherToken.decode(settingsWithSessionId, token, function(err, tokenSet){
                 assert.equal(err, null);
