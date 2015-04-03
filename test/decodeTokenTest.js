@@ -96,6 +96,52 @@ describe('Decode tokens', function () {
             cipherToken.decode(settingWithSeveralCipherKeys, token, function (err, tokenSet) {
                 should.not.exist(err);
                 should.exist(tokenSet);
+                tokenSet.userId.should.deep.equal('userId');
+            });
+        });
+    });
+
+    it('Should decode tokens firmed with other firm keys included in the settings', function () {
+        const cipherKey = 'cipherKey12345',
+            usedFirmKey = 'sameFirmKey';
+
+        const settingsWithOneFirmKey = {
+            cipherKey: cipherKey,
+            firmKey:  usedFirmKey
+        };
+
+        const settingWithSeveralFirmKeys = {
+            cipherKey: cipherKey,
+            firmKeys: ['firstFirmKey', 'secondFirmKey', usedFirmKey]
+        };
+
+        cipherToken.encode(settingsWithOneFirmKey, 'userId', null, {data: 'here'}, function (err, token) {
+            cipherToken.decode(settingWithSeveralFirmKeys, token, function (err, tokenSet) {
+                should.not.exist(err);
+                should.exist(tokenSet);
+                tokenSet.userId.should.deep.equal('userId');
+            });
+        });
+    });
+
+    it('Should not decode tokens firmed with other firm keys if the correct one in not included in the settings', function () {
+        const cipherKey = 'cipherKey12345',
+            usedFirmKey = 'sameFirmKey';
+
+        const settingsWithOneFirmKey = {
+            cipherKey: cipherKey,
+            firmKey:  usedFirmKey
+        };
+
+        const settingWithSeveralFirmKeys = {
+            cipherKey: cipherKey,
+            firmKeys: ['firstFirmKey', 'secondFirmKey', usedFirmKey + '123456789']
+        };
+
+        cipherToken.encode(settingsWithOneFirmKey, 'userId', null, {data: 'here'}, function (err, token) {
+            cipherToken.decode(settingWithSeveralFirmKeys, token, function (err, tokenSet) {
+                should.exist(err);
+                should.not.exist(tokenSet);
             });
         });
     });
