@@ -3,8 +3,9 @@
 const should = require('chai').should(),
     cipherToken = require('../lib/index.js');
 
-const USER_ID = 'John Spartan';
-const DATA = {field1:'a1b2c3d4e5f6'};
+
+const userId = 'John Spartan',
+    dataToEncode = {field1:'a1b2c3d4e5f6'};
 
 const settings = {
     cipherKey: 'myCipherKey123',
@@ -13,7 +14,7 @@ const settings = {
 
 
 let validToken;
-cipherToken.encode(settings, USER_ID, null, DATA, function (err, token) {
+cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
     validToken = token;
 });
 
@@ -23,8 +24,8 @@ describe('Decode tokens', function () {
         cipherToken.decode(settings, validToken, function (err, tokenSet) {
             should.not.exist(err);
             should.exist(tokenSet);
-            tokenSet.userId.should.deep.equal(USER_ID);
-            tokenSet.data.should.deep.equal(DATA);
+            tokenSet.userId.should.deep.equal(userId);
+            tokenSet.data.should.deep.equal(dataToEncode);
             done();
         });
     });
@@ -43,7 +44,7 @@ describe('Decode tokens', function () {
             firmKey: 'anotherFirmKey',
             tokenExpirationMinutes : 2
         };
-        cipherToken.encode(customSettings, USER_ID, null, DATA, function (err, token) {
+        cipherToken.encode(customSettings, userId, null, dataToEncode, function (err, token) {
             cipherToken.decode(customSettings, token, function (err, tokenSet) {
                 const expected = new Date().getTime() + customSettings.tokenExpirationMinutes*60*1000,
                     expectedRounded = (expected/(60*1000)).toFixed(),

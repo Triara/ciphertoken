@@ -4,8 +4,8 @@ const should = require('chai').should(),
     cipherToken = require('../lib/index.js');
 
 
-const USER_ID = 'John Spartan';
-const DATA = {field1:'a1b2c3d4e5f6'};
+const userId = 'John Spartan',
+    dataToEncode = {field1:'a1b2c3d4e5f6'};
 
 const settingsWithSessionId = {
     cipherKey: 'myCipherKey123',
@@ -14,9 +14,10 @@ const settingsWithSessionId = {
 };
 
 let tokenWithSessionId;
-cipherToken.encode(settingsWithSessionId, USER_ID, null, DATA, function (err, token) {
+cipherToken.encode(settingsWithSessionId, userId, null, dataToEncode, function (err, token) {
     tokenWithSessionId = token;
 });
+
 
 describe('SessionId support', function() {
     it('Token should have a sessionId when enabled', function (done) {
@@ -32,7 +33,7 @@ describe('SessionId support', function() {
             firmKey:  'myFirmKey123'
         };
 
-        cipherToken.encode(defaultSettings, USER_ID, null, DATA, function (err, token) {
+        cipherToken.encode(defaultSettings, userId, null, dataToEncode, function (err, token) {
             cipherToken.decode(defaultSettings, token, function (err, tokenSet) {
                 should.not.exist(tokenSet.sessionId);
                 done();
@@ -44,12 +45,12 @@ describe('SessionId support', function() {
         let firstSessionId = '',
             secondSessionId = '';
 
-        cipherToken.encode(settingsWithSessionId, 'first user', null, DATA, function(err, token){
+        cipherToken.encode(settingsWithSessionId, 'first user', null, dataToEncode, function(err, token){
             cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
                 firstSessionId = tokenSet.sessionId;
             })
         });
-        cipherToken.encode(settingsWithSessionId, 'second user', null, DATA, function (err, token) {
+        cipherToken.encode(settingsWithSessionId, 'second user', null, dataToEncode, function (err, token) {
             cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
                 secondSessionId = tokenSet.sessionId;
             })
@@ -61,7 +62,7 @@ describe('SessionId support', function() {
     it('New token can be created with a given sessionId', function () {
         const sessionId = 'abc123456';
 
-        cipherToken.encode(settingsWithSessionId, USER_ID, sessionId, DATA, function (err, token) {
+        cipherToken.encode(settingsWithSessionId, userId, sessionId, dataToEncode, function (err, token) {
             cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
                 tokenSet.sessionId.should.deep.equal(sessionId);
             });
