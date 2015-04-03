@@ -57,4 +57,16 @@ describe('Token creation', function () {
             err.err.should.deep.equal('FirmKey required');
         });
     });
+
+    it('Should accept an array of cipher keys', function () {
+        const settingsWithSeveralCipherKeys = {
+            cipherKeys: ['myFirstCipherKey123', 'mySecondCipherKey123'],
+            firmKey:  'myFirmKey123'
+        };
+
+        cipherToken.encode(settingsWithSeveralCipherKeys, userId, null, dataToEncode, function (err, token) {
+            should.not.exist(err);
+            should.exist(token);
+        });
+    });
 });
