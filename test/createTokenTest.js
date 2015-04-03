@@ -14,53 +14,47 @@ const settings = {
 
 
 describe('Token creation', function () {
-    it('Should generate tokens', function(done) {
+    it('Should generate tokens', function() {
         cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
             should.not.exist(err);
             should.exist(token);
-            done();
         });
     });
 
-    it('Should not contain +, / and = symbols', function (done) {
+    it('Should not contain +, / and = symbols', function () {
         cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
             token.should.not.contain('+');
             token.should.not.contain('/');
             token.should.not.contain('=');
-            done();
         });
     });
 
 
-    it('Should return an error when trying to create a token with empty settings', function (done) {
+    it('Should return an error when trying to create a token with empty settings', function () {
         cipherToken.encode({}, userId, null, dataToEncode, function (err) {
             should.exist(err);
             err.err.should.deep.equal('Settings required');
-            done();
         });
     });
 
-    it('Should return an error when trying to create a token with undefined settings', function (done) {
+    it('Should return an error when trying to create a token with undefined settings', function () {
         cipherToken.encode(undefined, userId, null, dataToEncode, function (err) {
             should.exist(err);
             err.err.should.deep.equal('Settings required');
-            done();
         });
     });
 
-    it('Should return an error when cipherKey is missing', function (done) {
+    it('Should return an error when cipherKey is missing', function () {
         cipherToken.encode({'firmKey': 'firmKey1234'}, userId, null, dataToEncode, function (err) {
             should.exist(err);
             err.err.should.deep.equal('CipherKey required');
-            done();
         });
     });
 
-    it('Should return an error when firmKey is missing', function (done) {
+    it('Should return an error when firmKey is missing', function () {
         cipherToken.encode({'cipherKey': 'cipherKey1234'}, userId, null, dataToEncode, function (err) {
             should.exist(err);
             err.err.should.deep.equal('FirmKey required');
-            done();
         });
     });
 });

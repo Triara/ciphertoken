@@ -20,25 +20,23 @@ cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
 
 
 describe('Decode tokens', function () {
-    it('Generated token must be decoded back to get original data', function (done) {
+    it('Generated token must be decoded back to get original data', function () {
         cipherToken.decode(settings, validToken, function (err, tokenSet) {
             should.not.exist(err);
             should.exist(tokenSet);
             tokenSet.userId.should.deep.equal(userId);
             tokenSet.data.should.deep.equal(dataToEncode);
-            done();
         });
     });
 
-    it('Should return an expiresAtTimestamp', function (done) {
+    it('Should return an expiresAtTimestamp', function () {
         cipherToken.decode(settings, validToken, function (err, tokenSet) {
             should.exist(tokenSet.expiresAtTimestamp);
-            done();
         });
     });
 
 
-    it('ExpiresInTimestamp should be greater than actual time according to settings', function (done) {
+    it('ExpiresInTimestamp should be greater than actual time according to settings', function () {
         const customSettings = {
             cipherKey: 'myCipherKey123',
             firmKey: 'anotherFirmKey',
@@ -51,22 +49,20 @@ describe('Decode tokens', function () {
                     actualRounded = (tokenSet.expiresAtTimestamp/(60*1000)).toFixed();
 
                 expectedRounded.should.equal(actualRounded);
-                done();
             });
         });
     });
 
-    it('Should return an error when submitted token is invalid', function (done) {
+    it('Should return an error when submitted token is invalid', function () {
         const token = 'invalid token';
         cipherToken.decode(settings, token, function (err, tokenSet) {
             should.exist(err);
             should.not.exist(tokenSet);
             err.err.should.be.deep.equal('Bad token');
-            done();
         });
     });
 
-    it('Should return an error when trying to decode with invalid firm key', function (done) {
+    it('Should return an error when trying to decode with invalid firm key', function () {
         const settingsWithDifferentFirmKey = {
             cipherKey: 'myCipherKey123',
             firmKey: 'anotherFirmKey'
@@ -76,11 +72,10 @@ describe('Decode tokens', function () {
             should.not.exist(tokenSet);
             should.exist(err);
             err.err.should.be.deep.equal('Bad credentials');
-            done();
         });
     });
 
-    it('Should return an error when trying to decode with incorrect settings', function (done) {
+    it('Should return an error when trying to decode with incorrect settings', function () {
         const settingsWithDifferentCipherKey = {
             cipherKey: 'anotherCipherKey123',
             firmKey:  'myFirmKey123'
@@ -90,7 +85,6 @@ describe('Decode tokens', function () {
             should.not.exist(tokenSet);
             should.exist(err);
             err.err.should.be.deep.equal('Bad credentials');
-            done();
         });
     });
 });

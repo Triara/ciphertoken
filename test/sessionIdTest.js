@@ -20,14 +20,13 @@ cipherToken.encode(settingsWithSessionId, userId, null, dataToEncode, function (
 
 
 describe('SessionId support', function() {
-    it('Token should have a sessionId when enabled', function (done) {
+    it('Token should have a sessionId when enabled', function () {
         cipherToken.decode(settingsWithSessionId, tokenWithSessionId, function (err, tokenSet) {
             should.exist(tokenSet.sessionId);
-            done();
         });
     });
 
-    it('By default, token creation do not include session ids', function (done) {
+    it('By default, token creation do not include session ids', function () {
         const defaultSettings = {
             cipherKey: 'myCipherKey123',
             firmKey:  'myFirmKey123'
@@ -36,7 +35,6 @@ describe('SessionId support', function() {
         cipherToken.encode(defaultSettings, userId, null, dataToEncode, function (err, token) {
             cipherToken.decode(defaultSettings, token, function (err, tokenSet) {
                 should.not.exist(tokenSet.sessionId);
-                done();
             });
         });
     });
