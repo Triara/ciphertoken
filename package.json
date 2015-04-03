@@ -12,22 +12,22 @@
   },
   "author": "Jonas Da Cruz",
   "contributors": [
-      {
-        "name": "Kristina Zabunova",
-        "email": "triara.xiii@gmail.com",
-        "url": "https://github.com/Triara"
-      },
-      {
-        "name": "Luis Mesas",
-        "email": "luismesas@gmail.com",
-        "url": "https://github.com/luismesas"
-      },
-      {
-        "name": "Angel Sanchez",
-        "email": "angelsanchezroa@gmail.com",
-        "url": "https://github.com/angelsanchez"
-      }
-    ],
+    {
+      "name": "Kristina Zabunova",
+      "email": "triara.xiii@gmail.com",
+      "url": "https://github.com/Triara"
+    },
+    {
+      "name": "Luis Mesas",
+      "email": "luismesas@gmail.com",
+      "url": "https://github.com/luismesas"
+    },
+    {
+      "name": "Angel Sanchez",
+      "email": "angelsanchezroa@gmail.com",
+      "url": "https://github.com/angelsanchez"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/frikiplanet/ciphertoken/issues"
@@ -37,6 +37,7 @@
     "debug": "0.7.4"
   },
   "devDependencies": {
+    "chai": "^2.2.0",
     "mocha": "2.0.1"
   },
   "engines": {
