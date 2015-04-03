@@ -35,7 +35,6 @@ describe('Decode tokens', function () {
         });
     });
 
-
     it('ExpiresInTimestamp should be greater than actual time according to settings', function () {
         const customSettings = {
             cipherKey: 'myCipherKey123',
@@ -50,15 +49,6 @@ describe('Decode tokens', function () {
 
                 expectedRounded.should.equal(actualRounded);
             });
-        });
-    });
-
-    it('Should return an error when submitted token is invalid', function () {
-        const token = 'invalid token';
-        cipherToken.decode(settings, token, function (err, tokenSet) {
-            should.exist(err);
-            should.not.exist(tokenSet);
-            err.err.should.be.deep.equal('Bad token');
         });
     });
 
@@ -85,6 +75,28 @@ describe('Decode tokens', function () {
             should.not.exist(tokenSet);
             should.exist(err);
             err.err.should.be.deep.equal('Bad credentials');
+        });
+    });
+
+    it('Should decode tokens decoded with other cipher keys included in the settings', function () {
+        const usedCipherKey = 'cipherKey12345',
+            firmKey = 'sameFirmKey';
+
+        const settingsWithOneCipherKey = {
+            cipherKey: usedCipherKey,
+            firmKey:  firmKey
+        };
+
+        const settingWithSeveralCipherKeys = {
+            cipherKeys: ['first123', 'second123', usedCipherKey],
+            firmKey: firmKey
+        };
+
+        cipherToken.encode(settingsWithOneCipherKey, 'userId', null, {data: 'here'}, function (err, token) {
+            cipherToken.decode(settingWithSeveralCipherKeys, token, function (err, tokenSet) {
+                should.not.exist(err);
+                should.exist(tokenSet);
+            });
         });
     });
 });
