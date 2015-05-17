@@ -116,9 +116,7 @@ const settings = {
 
 const accessTokenCreator = cipherToken(settings);
 
-
 const cipheredToken = accessTokenCreator.set.userId('John Spartan').data('validData').encode();
-
 const decodedToken = accessTokenCreator.decode(cipheredToken);
 
 console.log(decodedToken.set.userId)

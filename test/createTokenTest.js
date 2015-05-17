@@ -34,6 +34,14 @@ describe('Token creation', () => {
         expect(decodedToken.set.data).to.equal(undefined);
     });
 
+    it('Should not generate token when user id is missing', () => {
+        const accessTokenCreator = cipherToken(settings);
+        const cipheredToken = accessTokenCreator.set.data(dataToEncode).encode();
+
+        should.not.exist(cipheredToken.token);
+        should.exist(cipheredToken.error);
+    });
+
     it('Should not contain +, / and = symbols', () => {
         const accessTokenCreator = cipherToken(settings);
         const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
