@@ -1,7 +1,8 @@
 'use strict';
 
 const should = require('chai').should(),
-    cipherToken = require('../lib/index.js');
+    cipherToken = require('../lib/index.js'),
+    _ = require('lodash');
 
 
 const userId = 'John Spartan',
@@ -13,72 +14,82 @@ const settings = {
 };
 
 
-describe('Token creation', function () {
-    it('Should generate tokens', function() {
-        cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
-            should.not.exist(err);
-            should.exist(token);
-        });
+describe('Token creation', () => {
+    it('Should generate tokens', () => {
+        const accessTokenCreator = cipherToken(settings);
+        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+
+        should.exist(cipheredToken.token);
+        should.not.exist(cipheredToken.error);
     });
 
-    it('Should not contain +, / and = symbols', function () {
-        cipherToken.encode(settings, userId, null, dataToEncode, function (err, token) {
-            token.should.not.contain('+');
-            token.should.not.contain('/');
-            token.should.not.contain('=');
-        });
+    it('Should not contain +, / and = symbols', () => {
+        const accessTokenCreator = cipherToken(settings);
+        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+
+        cipheredToken.token.should.not.contain('+');
+        cipheredToken.token.should.not.contain('/');
+        cipheredToken.token.should.not.contain('=');
     });
 
 
-    it('Should return an error when trying to create a token with empty settings', function () {
-        cipherToken.encode({}, userId, null, dataToEncode, function (err) {
-            should.exist(err);
-            err.err.should.deep.equal('Settings required');
-        });
+    it('Should return an error when trying to create a token with undefined settings', () => {
+        const accessTokenCreator = cipherToken();
+
+        should.exist(accessTokenCreator.error);
+        accessTokenCreator.error.should.equal('settings must be provided');
     });
 
-    it('Should return an error when trying to create a token with undefined settings', function () {
-        cipherToken.encode(undefined, userId, null, dataToEncode, function (err) {
-            should.exist(err);
-            err.err.should.deep.equal('Settings required');
-        });
+    it('Should return an error when trying to create a token with null settings', () => {
+        const accessTokenCreator = cipherToken(null);
+
+        should.exist(accessTokenCreator.error);
+        accessTokenCreator.error.should.equal('settings must be provided');
     });
 
-    it('Should return an error when cipherKey is missing', function () {
-        cipherToken.encode({'firmKey': 'firmKey1234'}, userId, null, dataToEncode, function (err) {
-            should.exist(err);
-            err.err.should.deep.equal('CipherKey required');
-        });
+    it('Should return an error when cipherKey is missing', () => {
+        const settingWithoutCipherKey = _.cloneDeep(settings);
+        delete settingWithoutCipherKey.cipherKey;
+
+        const accessTokenCreator = cipherToken(settingWithoutCipherKey);
+
+        should.exist(accessTokenCreator.error);
+        accessTokenCreator.error.should.equal('cipherKey required');
     });
 
-    it('Should return an error when firmKey is missing', function () {
-        cipherToken.encode({'cipherKey': 'cipherKey1234'}, userId, null, dataToEncode, function (err) {
-            should.exist(err);
-            err.err.should.deep.equal('FirmKey required');
-        });
+    it('Should return an error when firmKey is missing', () => {
+        const settingWithoutCipherKey = _.cloneDeep(settings);
+        delete settingWithoutCipherKey.firmKey;
+
+        const accessTokenCreator = cipherToken(settingWithoutCipherKey);
+
+        should.exist(accessTokenCreator.error);
+        accessTokenCreator.error.should.equal('FirmKey required');
     });
 
-    it('Should accept an array of cipher keys', function () {
+    it('Should accept an array of cipher keys', () => {
         const settingsWithSeveralCipherKeys = {
             cipherKeys: ['myFirstCipherKey123', 'mySecondCipherKey123'],
             firmKey:  'myFirmKey123'
         };
 
-        cipherToken.encode(settingsWithSeveralCipherKeys, userId, null, dataToEncode, function (err, token) {
-            should.not.exist(err);
-            should.exist(token);
-        });
+        const accessTokenCreator = cipherToken(settingsWithSeveralCipherKeys);
+        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+
+        should.exist(cipheredToken.token);
+        should.not.exist(cipheredToken.error);
     });
 
-    it('Should accept an array of firm keys', function () {
+    it('Should accept an array of firm keys', () => {
         const settingsWithSeveralFirmKeys = {
             cipherKey: 'myFirstCipherKey123',
             firmKeys:  ['myFirstFirmKey123', 'mySecondFirmKey123']
         };
 
-        cipherToken.encode(settingsWithSeveralFirmKeys, userId, null, dataToEncode, function (err, token) {
-            should.not.exist(err);
-            should.exist(token);
-        });
+        const accessTokenCreator = cipherToken(settingsWithSeveralFirmKeys);
+        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+
+        should.exist(cipheredToken.token);
+        should.not.exist(cipheredToken.error);
     });
 });

@@ -3,7 +3,6 @@
 const should = require('chai').should(),
     cipherToken = require('../lib/index.js');
 
-
 const userId = 'John Spartan',
     dataToEncode = {field1:'a1b2c3d4e5f6'};
 
@@ -13,57 +12,46 @@ const settingsWithSessionId = {
     enableSessionId: true
 };
 
-let tokenWithSessionId;
-cipherToken.encode(settingsWithSessionId, userId, null, dataToEncode, function (err, token) {
-    tokenWithSessionId = token;
-});
-
-
 describe('SessionId support', function() {
-    it('Token should have a sessionId when enabled', function () {
-        cipherToken.decode(settingsWithSessionId, tokenWithSessionId, function (err, tokenSet) {
-            should.exist(tokenSet.sessionId);
-        });
+
+    const accessTokenCreator = cipherToken(settingsWithSessionId);
+
+    it('Token should have a sessionId when enabled', () => {
+        const cipheredTokenWithSessionId = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const decodedToken = accessTokenCreator.decode(cipheredTokenWithSessionId);
+
+        should.exist(decodedToken.set.sessionId);
     });
 
-    it('By default, token creation do not include session ids', function () {
+    it('By default, token creation do not include session ids', () => {
         const defaultSettings = {
             cipherKey: 'myCipherKey123',
             firmKey:  'myFirmKey123'
         };
+        const accessTokenCreator = cipherToken(defaultSettings);
+        const cipheredTokenWithoutSessionId = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
 
-        cipherToken.encode(defaultSettings, userId, null, dataToEncode, function (err, token) {
-            cipherToken.decode(defaultSettings, token, function (err, tokenSet) {
-                should.not.exist(tokenSet.sessionId);
-            });
-        });
+        const decodedToken = accessTokenCreator.decode(cipheredTokenWithoutSessionId);
+
+        should.not.exist(decodedToken.set.sessionId);
     });
 
-    it('Session ids should be different for different tokens', function() {
-        let firstSessionId = '',
-            secondSessionId = '';
+    it('Session ids should be different for different tokens', () => {
+        const firstToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const secondToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
 
-        cipherToken.encode(settingsWithSessionId, 'first user', null, dataToEncode, function(err, token){
-            cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
-                firstSessionId = tokenSet.sessionId;
-            })
-        });
-        cipherToken.encode(settingsWithSessionId, 'second user', null, dataToEncode, function (err, token) {
-            cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
-                secondSessionId = tokenSet.sessionId;
-            })
-        });
+        const firstTokenDecoded = accessTokenCreator.decode(firstToken);
+        const secondTokenDecoded = accessTokenCreator.decode(secondToken);
 
-        firstSessionId.should.not.equal(secondSessionId);
+        firstTokenDecoded.set.sessionId.should.not.equal(secondTokenDecoded.set.sessionId);
     });
 
-    it('New token can be created with a given sessionId', function () {
+    it('New token can be created with a given sessionId', () => {
         const sessionId = 'abc123456';
 
-        cipherToken.encode(settingsWithSessionId, userId, sessionId, dataToEncode, function (err, token) {
-            cipherToken.decode(settingsWithSessionId, token, function (err, tokenSet) {
-                tokenSet.sessionId.should.deep.equal(sessionId);
-            });
-        });
+        const encodedToken = accessTokenCreator.set.userId(userId).data(dataToEncode).sessionId(sessionId).encode();
+        const decodedToken = accessTokenCreator.decode(encodedToken);
+
+        decodedToken.set.sessionId.should.deep.equal(sessionId);
     });
 });

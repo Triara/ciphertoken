@@ -14,17 +14,25 @@ A method to create ciphered accessToken based on the following principles:
 ### Require
 
 ```js
-var cipherToken = require('cipherToken');
+const cipherToken = require('cipherToken');
 ```
 
 ### Usage
 
 cipherToken is designed to be used as a module.
 
+
+Initiate the token generator for a set of settings
+
+```js
+const accessTokenCreator = cipherToken(settings);
+```
+
+
 Tokens are created this way
 
 ```js
-cipherToken.createToken(settings, user_id, session_id, data, function(err, token){});
+const cipheredToken = accessTokenCreator.set.userId('my-id12').data({'some': 'data'}).encode();
 ```
 
 
@@ -32,7 +40,7 @@ and can be decoded back to a more readable state with
 
 
 ```js
-cipherToken.getTokenSet(settings, token, function(err, tokenSet){});
+const decodedToken = accessTokenCreator.decode(cipheredToken);
 ```
 
 
@@ -53,67 +61,69 @@ Settings is a hash with the following properties
 Settings must be passed to cipherToken in each call. Only cipherKey and firmKey are required.
 
 
-### Method: createToken
+
+### Create tokens
+
+
+First thing you need is a cipherToken for your settings
 
 ```js
-cipherToken.createToken(settings, user_id, session_id, data, function(err, token){});
+const accessTokenCreator = cipherToken(settings);
 ```
 
-To create a token the first thing you need to do is to define your settings.
-UserId can be an username or any other thing you use to identify your clients.
-SessionId is only when you want to create a token associated to the same session of another token (usually near expiration).
-SessionId can be null.
+After that you'll create a set for a given user which will contain data to be encoded in the token
+
+```js
+const cipheredToken = accessTokenCreator.set.userId('my-id12').data({'some': 'data'}).sessionId('my-previous-session-id').encode();
+```
+
+UserId can be an username or any other thing you use to identify your customers.
+SessionId is only to be submitted when you want to create a token associated to the same session of another token (usually near expiration).
+If you have __enableSessionId__ in your settings enabled but that's the first time creating a token for a new session, then you don't need to use the method 'sessionId' and a random UUID v4 will be generated.
 Data is to encode the payload you want to travel with the token.
 
-cipherToken.createToken expects a callback in the error-result form.
+The result, cipheredToken, is an object which for now has only two properties
+- token: contains the token itself
+- error: only when there was an error during encoding process
 
 
 
-### Method: getTokenSet
+### Decode tokens
+
+You'll need an accessTokenCreator (still looking for a better name) initialized with the same settings as the ones used in the encoding process
 
 ```js
-cipherToken.getTokenSet(settings, token, function(err, tokenSet){});
+const decodedToken = accessTokenCreator.decode(validToken);
 ```
 
-Same settings of creation must be provided in order to decode the token.
+decodedToken has the following properties
+- set: the data encoded within the token, contains: userId, expiresAtTimestamp, data and sessionId if enabled
+- error: if an error occurred during decoding
 
-tokenSet has the following properties
-
-- userId: the same as the provided one
-- expiresAtTimestamp: at creation, gets the actual time and add to it the time expiration to calculate when will the token expire.
+The only one added by cipherToken is expiresAtTimestamp: at creation, gets the actual time and add to it the time expiration to calculate when will the token expire.
 Cipher token doesn't care if the token has expired or not.
-- data: same as provided
-- sessionId: (if enabled) random the first time, after that previous one can be used
+
 
 ### Example
 
 ```js
-var cipherToken = require('cipherToken');
+const cipherToken = require('cipherToken');
 
-var settings = {
+const settings = {
     cipherKey: 'myCipherKey123',
     firmKey:  'myFirmKey123'
 };
 
-var userId = 'John Spartan';
-var data = 'validData';
+const accessTokenCreator = cipherToken(settings);
 
-cipherToken.createToken(settings, userId, null, data, doWhateverYouWantWithYourToken);
-function doWhateverYouWantWithYourToken(err, token){
 
-}
+const cipheredToken = accessTokenCreator.set.userId('John Spartan').data('validData').encode();
 
-cipherToken.getTokenSet(settings, validToken, function(err, tokenSet){
-    console.log(tokenSet.userId);
-    console.log(tokenSet.data);
-    console.log(tokenSet.expiresAtTimestamp);
-});
+const decodedToken = accessTokenCreator.decode(cipheredToken);
+
+console.log(decodedToken.set.userId)
+console.log(decodedToken.set.expiresAtTimestamp)
+console.log(decodedToken.set.data)
+console.log(decodedToken.set.sessionId)
 
 ```
-
-
-
-
-
-
-
