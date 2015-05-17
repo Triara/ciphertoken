@@ -1,6 +1,7 @@
 'use strict';
 
 const should = require('chai').should(),
+    expect = require('chai').expect,
     cipherToken = require('../lib/index.js'),
     _ = require('lodash');
 
@@ -15,12 +16,22 @@ const settings = {
 
 
 describe('Token creation', () => {
-    it('Should generate tokens', () => {
+    it('Should generate token', () => {
         const accessTokenCreator = cipherToken(settings);
         const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
 
         should.exist(cipheredToken.token);
         should.not.exist(cipheredToken.error);
+    });
+
+    it('Should generate token when data is missing', () => {
+        const accessTokenCreator = cipherToken(settings);
+
+        const cipheredToken = accessTokenCreator.set.userId(userId).encode();
+        const decodedToken = accessTokenCreator.decode(cipheredToken);
+
+        decodedToken.set.userId.should.deep.equal(userId);
+        expect(decodedToken.set.data).to.equal(undefined);
     });
 
     it('Should not contain +, / and = symbols', () => {
