@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/frikiplanet/ciphertoken",
   "dependencies": {
+    "lodash": "3.9.3"
   },
   "devDependencies": {
     "chai": "3.0.0",
-    "lodash": "3.9.3",
     "mocha": "2.2.5",
     "mockery": "1.4.0",
     "node-uuid": "1.4.3"
