@@ -17,7 +17,7 @@ describe('SessionId support', function() {
     const accessTokenCreator = cipherToken(settingsWithSessionId);
 
     it('Token should have a sessionId when enabled', () => {
-        const cipheredTokenWithSessionId = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredTokenWithSessionId = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
         const decodedToken = accessTokenCreator.decode(cipheredTokenWithSessionId);
 
         should.exist(decodedToken.set.sessionId);
@@ -29,7 +29,7 @@ describe('SessionId support', function() {
             firmKey:  'myFirmKey123'
         };
         const accessTokenCreator = cipherToken(defaultSettings);
-        const cipheredTokenWithoutSessionId = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredTokenWithoutSessionId = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         const decodedToken = accessTokenCreator.decode(cipheredTokenWithoutSessionId);
 
@@ -37,8 +37,8 @@ describe('SessionId support', function() {
     });
 
     it('Session ids should be different for different tokens', () => {
-        const firstToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
-        const secondToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const firstToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
+        const secondToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         const firstTokenDecoded = accessTokenCreator.decode(firstToken);
         const secondTokenDecoded = accessTokenCreator.decode(secondToken);
@@ -49,7 +49,7 @@ describe('SessionId support', function() {
     it('New token can be created with a given sessionId', () => {
         const sessionId = 'abc123456';
 
-        const encodedToken = accessTokenCreator.set.userId(userId).data(dataToEncode).sessionId(sessionId).encode();
+        const encodedToken = accessTokenCreator.create.userId(userId).data(dataToEncode).sessionId(sessionId).encode();
         const decodedToken = accessTokenCreator.decode(encodedToken);
 
         decodedToken.set.sessionId.should.deep.equal(sessionId);

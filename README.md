@@ -32,7 +32,7 @@ const accessTokenCreator = cipherToken(settings);
 Tokens are created this way
 
 ```js
-const cipheredToken = accessTokenCreator.set.userId('my-id12').data({'some': 'data'}).encode();
+const cipheredToken = accessTokenCreator.create.userId('my-id12').data({'some': 'data'}).encode();
 ```
 
 
@@ -116,7 +116,7 @@ const settings = {
 
 const accessTokenCreator = cipherToken(settings);
 
-const cipheredToken = accessTokenCreator.set.userId('John Spartan').data('validData').encode();
+const cipheredToken = accessTokenCreator.create.userId('John Spartan').data('validData').encode();
 const decodedToken = accessTokenCreator.decode(cipheredToken);
 
 console.log(decodedToken.set.userId)

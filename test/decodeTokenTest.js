@@ -14,7 +14,7 @@ const settings = {
 
 
 const accessTokenCreator = cipherToken(settings);
-const validToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+const validToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
 describe('Decode tokens', function () {
     it('Generated token must be decoded back to get original data', () => {
@@ -41,7 +41,7 @@ describe('Decode tokens', function () {
         };
 
         const accessTokenCreator = cipherToken(customSettings);
-        const encodedToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const encodedToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         const decodedToken = accessTokenCreator.decode(encodedToken);
 

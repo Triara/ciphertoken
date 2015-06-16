@@ -18,7 +18,7 @@ const settings = {
 describe('Token creation', () => {
     it('Should generate token', () => {
         const accessTokenCreator = cipherToken(settings);
-        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         should.exist(cipheredToken.token);
         should.not.exist(cipheredToken.error);
@@ -27,7 +27,7 @@ describe('Token creation', () => {
     it('Should generate token when data is missing', () => {
         const accessTokenCreator = cipherToken(settings);
 
-        const cipheredToken = accessTokenCreator.set.userId(userId).encode();
+        const cipheredToken = accessTokenCreator.create.userId(userId).encode();
         const decodedToken = accessTokenCreator.decode(cipheredToken);
 
         decodedToken.set.userId.should.deep.equal(userId);
@@ -36,7 +36,7 @@ describe('Token creation', () => {
 
     it('Should not generate token when user id is missing', () => {
         const accessTokenCreator = cipherToken(settings);
-        const cipheredToken = accessTokenCreator.set.data(dataToEncode).encode();
+        const cipheredToken = accessTokenCreator.create.data(dataToEncode).encode();
 
         should.not.exist(cipheredToken.token);
         should.exist(cipheredToken.error);
@@ -44,7 +44,7 @@ describe('Token creation', () => {
 
     it('Should not contain +, / and = symbols', () => {
         const accessTokenCreator = cipherToken(settings);
-        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         cipheredToken.token.should.not.contain('+');
         cipheredToken.token.should.not.contain('/');
@@ -93,7 +93,7 @@ describe('Token creation', () => {
         };
 
         const accessTokenCreator = cipherToken(settingsWithSeveralCipherKeys);
-        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         should.exist(cipheredToken.token);
         should.not.exist(cipheredToken.error);
@@ -106,7 +106,7 @@ describe('Token creation', () => {
         };
 
         const accessTokenCreator = cipherToken(settingsWithSeveralFirmKeys);
-        const cipheredToken = accessTokenCreator.set.userId(userId).data(dataToEncode).encode();
+        const cipheredToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
         should.exist(cipheredToken.token);
         should.not.exist(cipheredToken.error);
