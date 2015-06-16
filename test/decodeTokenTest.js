@@ -123,12 +123,12 @@ describe('Decode tokens', function () {
 
         const cipherTokenCreatorWithSeveralFirmKeys = cipherToken(settingWithSeveralFirmKeys);
         const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(token);
-        
+
         should.exist(decodedToken.set);
         decodedToken.set.userId.should.equal('user-124');
     });
 
-    it.skip('Should not decode tokens firmed with other firm keys if the correct one in not included in the settings', function () {
+    it('Should not decode tokens firmed with other firm keys if the correct one in not included in the settings', function () {
         const cipherKey = 'cipherKey12345',
             usedFirmKey = 'sameFirmKey';
 
@@ -142,11 +142,13 @@ describe('Decode tokens', function () {
             firmKeys: ['firstFirmKey', 'secondFirmKey', usedFirmKey + '123456789']
         };
 
-        cipherToken.encode(settingsWithOneFirmKey, 'userId', null, {data: 'here'}, function (err, token) {
-            cipherToken.decode(settingWithSeveralFirmKeys, token, function (err, tokenSet) {
-                should.exist(err);
-                should.not.exist(tokenSet);
-            });
-        });
+        const cipherTokenCreatorWithOneFirmKey = cipherToken(settingsWithOneFirmKey);
+        const token = cipherTokenCreatorWithOneFirmKey.create.userId('user-124').encode();
+
+        const cipherTokenCreatorWithSeveralFirmKeys = cipherToken(settingWithSeveralFirmKeys);
+        const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(token);
+
+        should.not.exist(decodedToken.set);
+        should.exist(decodedToken.error);
     });
 });
