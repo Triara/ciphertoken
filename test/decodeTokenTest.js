@@ -80,7 +80,7 @@ describe('Decode tokens', function () {
         decodedToken.error.should.be.deep.equal('Bad credentials');
     });
 
-    it.skip('Should decode tokens decoded with other cipher keys included in the settings', function () {
+    it('Should decode tokens decoded with other cipher keys included in the settings', function () {
         const usedCipherKey = 'cipherKey12345',
             firmKey = 'sameFirmKey';
 
@@ -94,13 +94,14 @@ describe('Decode tokens', function () {
             firmKey: firmKey
         };
 
-        cipherToken.encode(settingsWithOneCipherKey, 'userId', null, {data: 'here'}, function (err, token) {
-            cipherToken.decode(settingWithSeveralCipherKeys, token, function (err, tokenSet) {
-                should.not.exist(err);
-                should.exist(tokenSet);
-                tokenSet.userId.should.deep.equal('userId');
-            });
-        });
+        const cipherTokenCreatorWithOneCipherKey = cipherToken(settingsWithOneCipherKey);
+        const cipherTokenCreatorWithSeveralCipherKeys = cipherToken(settingWithSeveralCipherKeys);
+
+        const token = cipherTokenCreatorWithOneCipherKey.create.userId('user-12').encode();
+        const decodedToken = cipherTokenCreatorWithSeveralCipherKeys.decode(token);
+
+        should.exist(decodedToken.set);
+        decodedToken.set.userId.should.equal('user-12');
     });
 
     it.skip('Should decode tokens firmed with other firm keys included in the settings', function () {
