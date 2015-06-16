@@ -15,7 +15,7 @@
     {
       "name": "Kristina Zabunova",
       "email": "triara.xiii@gmail.com",
-      "url": "https://github.com/Triara"
+      "url": "https://github.com/triara"
     },
     {
       "name": "Luis Mesas",
@@ -36,11 +36,11 @@
   "dependencies": {
   },
   "devDependencies": {
-    "chai": "2.2.0",
-    "lodash": "3.8.0",
-    "mocha": "2.0.1",
+    "chai": "3.0.0",
+    "lodash": "3.9.3",
+    "mocha": "2.2.5",
     "mockery": "1.4.0",
-    "node-uuid": "^1.4.3"
+    "node-uuid": "1.4.3"
   },
   "engines": {
     "node": ">=0.12.0"
