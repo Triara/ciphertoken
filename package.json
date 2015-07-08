@@ -34,13 +34,13 @@
   },
   "homepage": "https://github.com/frikiplanet/ciphertoken",
   "dependencies": {
-    "lodash": "3.9.3"
+    "lodash": "3.9.3",
+    "node-uuid": "1.4.3"
   },
   "devDependencies": {
     "chai": "3.0.0",
     "mocha": "2.2.5",
-    "mockery": "1.4.0",
-    "node-uuid": "1.4.3"
+    "mockery": "1.4.0"
   },
   "engines": {
     "node": ">=0.12.0"
