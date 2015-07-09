@@ -93,7 +93,7 @@ The result, cipheredToken, is an object which for now has only two properties
 You'll need an accessTokenCreator (still looking for a better name) initialized with the same settings as the ones used in the encoding process
 
 ```js
-const decodedToken = accessTokenCreator.decode(validToken);
+const decodedToken = accessTokenCreator.decode(validToken.token);
 ```
 
 decodedToken has the following properties

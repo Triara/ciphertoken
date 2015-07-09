@@ -28,7 +28,7 @@ describe('Token creation', () => {
         const accessTokenCreator = cipherToken(settings);
 
         const cipheredToken = accessTokenCreator.create.userId(userId).encode();
-        const decodedToken = accessTokenCreator.decode(cipheredToken);
+        const decodedToken = accessTokenCreator.decode(cipheredToken.token);
 
         decodedToken.set.userId.should.deep.equal(userId);
         expect(decodedToken.set.data).to.equal(undefined);

@@ -18,7 +18,7 @@ describe('SessionId support', function() {
 
     it('Token should have a sessionId when enabled', () => {
         const cipheredTokenWithSessionId = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
-        const decodedToken = accessTokenCreator.decode(cipheredTokenWithSessionId);
+        const decodedToken = accessTokenCreator.decode(cipheredTokenWithSessionId.token);
 
         should.exist(decodedToken.set.sessionId);
     });
@@ -31,7 +31,7 @@ describe('SessionId support', function() {
         const accessTokenCreator = cipherToken(defaultSettings);
         const cipheredTokenWithoutSessionId = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
-        const decodedToken = accessTokenCreator.decode(cipheredTokenWithoutSessionId);
+        const decodedToken = accessTokenCreator.decode(cipheredTokenWithoutSessionId.token);
 
         should.not.exist(decodedToken.set.sessionId);
     });
@@ -40,8 +40,8 @@ describe('SessionId support', function() {
         const firstToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
         const secondToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
-        const firstTokenDecoded = accessTokenCreator.decode(firstToken);
-        const secondTokenDecoded = accessTokenCreator.decode(secondToken);
+        const firstTokenDecoded = accessTokenCreator.decode(firstToken.token);
+        const secondTokenDecoded = accessTokenCreator.decode(secondToken.token);
 
         firstTokenDecoded.set.sessionId.should.not.equal(secondTokenDecoded.set.sessionId);
     });
@@ -50,7 +50,7 @@ describe('SessionId support', function() {
         const sessionId = 'abc123456';
 
         const encodedToken = accessTokenCreator.create.userId(userId).data(dataToEncode).sessionId(sessionId).encode();
-        const decodedToken = accessTokenCreator.decode(encodedToken);
+        const decodedToken = accessTokenCreator.decode(encodedToken.token);
 
         decodedToken.set.sessionId.should.deep.equal(sessionId);
     });

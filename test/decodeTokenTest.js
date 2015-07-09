@@ -18,7 +18,7 @@ const validToken = accessTokenCreator.create.userId(userId).data(dataToEncode).e
 
 describe('Decode tokens', function () {
     it('Generated token must be decoded back to get original data', () => {
-        const decodedToken = accessTokenCreator.decode(validToken);
+        const decodedToken = accessTokenCreator.decode(validToken.token);
 
         should.not.exist(decodedToken.error);
         should.exist(decodedToken.set);
@@ -28,7 +28,7 @@ describe('Decode tokens', function () {
     });
 
     it('Should return an expiresAtTimestamp', function () {
-        const decodedToken = accessTokenCreator.decode(validToken);
+        const decodedToken = accessTokenCreator.decode(validToken.token);
 
         should.exist(decodedToken.set.expiresAtTimestamp);
     });
@@ -43,7 +43,7 @@ describe('Decode tokens', function () {
         const accessTokenCreator = cipherToken(customSettings);
         const encodedToken = accessTokenCreator.create.userId(userId).data(dataToEncode).encode();
 
-        const decodedToken = accessTokenCreator.decode(encodedToken);
+        const decodedToken = accessTokenCreator.decode(encodedToken.token);
 
         const expected = new Date().getTime() + customSettings.tokenExpirationMinutes*60*1000;
         const expectedRounded = (expected/(60*1000)).toFixed(1);
@@ -59,7 +59,7 @@ describe('Decode tokens', function () {
         };
 
         const anotherCipherTokenCreator = cipherToken(settingsWithDifferentFirmKey);
-        const decodedToken = anotherCipherTokenCreator.decode(validToken);
+        const decodedToken = anotherCipherTokenCreator.decode(validToken.token);
 
         should.not.exist(decodedToken.set);
         should.exist(decodedToken.error);
@@ -73,7 +73,7 @@ describe('Decode tokens', function () {
         };
 
         const anotherCipherTokenCreator = cipherToken(settingsWithDifferentCipherKey);
-        const decodedToken = anotherCipherTokenCreator.decode(validToken);
+        const decodedToken = anotherCipherTokenCreator.decode(validToken.token);
 
         should.not.exist(decodedToken.set);
         should.exist(decodedToken.error);
@@ -95,10 +95,10 @@ describe('Decode tokens', function () {
         };
 
         const cipherTokenCreatorWithOneCipherKey = cipherToken(settingsWithOneCipherKey);
-        const token = cipherTokenCreatorWithOneCipherKey.create.userId('user-12').encode();
+        const cipheredToken = cipherTokenCreatorWithOneCipherKey.create.userId('user-12').encode();
 
         const cipherTokenCreatorWithSeveralCipherKeys = cipherToken(settingWithSeveralCipherKeys);
-        const decodedToken = cipherTokenCreatorWithSeveralCipherKeys.decode(token);
+        const decodedToken = cipherTokenCreatorWithSeveralCipherKeys.decode(cipheredToken.token);
 
         should.exist(decodedToken.set);
         decodedToken.set.userId.should.equal('user-12');
@@ -119,10 +119,10 @@ describe('Decode tokens', function () {
         };
 
         const cipherTokenCreatorWithOneFirmKey = cipherToken(settingsWithOneFirmKey);
-        const token = cipherTokenCreatorWithOneFirmKey.create.userId('user-124').encode();
+        const cipheredToken = cipherTokenCreatorWithOneFirmKey.create.userId('user-124').encode();
 
         const cipherTokenCreatorWithSeveralFirmKeys = cipherToken(settingWithSeveralFirmKeys);
-        const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(token);
+        const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(cipheredToken.token);
 
         should.exist(decodedToken.set);
         decodedToken.set.userId.should.equal('user-124');
@@ -143,10 +143,10 @@ describe('Decode tokens', function () {
         };
 
         const cipherTokenCreatorWithOneFirmKey = cipherToken(settingsWithOneFirmKey);
-        const token = cipherTokenCreatorWithOneFirmKey.create.userId('user-124').encode();
+        const cipheredToken = cipherTokenCreatorWithOneFirmKey.create.userId('user-124').encode();
 
         const cipherTokenCreatorWithSeveralFirmKeys = cipherToken(settingWithSeveralFirmKeys);
-        const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(token);
+        const decodedToken = cipherTokenCreatorWithSeveralFirmKeys.decode(cipheredToken.token);
 
         should.not.exist(decodedToken.set);
         should.exist(decodedToken.error);
