@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/frikiplanet/ciphertoken.svg?branch=master)](https://travis-ci.org/frikiplanet/ciphertoken)
+[![Circle CI](https://circleci.com/gh/strajah/strajah-token.svg?style=svg)](https://circleci.com/gh/strajah/strajah-token)
 
 cipherToken
 ===========
