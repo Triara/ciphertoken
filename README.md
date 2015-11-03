@@ -1,6 +1,6 @@
 [![Circle CI](https://circleci.com/gh/strajah/strajah-token.svg?style=svg)](https://circleci.com/gh/strajah/strajah-token)
 
-cipherToken
+strajah-token
 ===========
 
 A method to create ciphered accessToken based on the following principles:
@@ -14,18 +14,18 @@ A method to create ciphered accessToken based on the following principles:
 ### Require
 
 ```js
-const cipherToken = require('cipherToken');
+const strajahToken = require('strajah-token');
 ```
 
 ### Usage
 
-cipherToken is designed to be used as a module.
+strajah-token is designed to be used as a module.
 
 
 Initiate the token generator for a set of settings
 
 ```js
-const accessTokenCreator = cipherToken(settings);
+const accessTokenCreator = strajahToken(settings);
 ```
 
 
@@ -58,17 +58,17 @@ Settings is a hash with the following properties
 - __tokenEncoding__ : encoding used in the token format (__base64__ by default)
 - __enableSessionId__ : sessionId of an accessToken, can be preset at accessToken creation
 
-Settings must be passed to cipherToken in each call. Only cipherKey and firmKey are required.
+Settings must be passed to strajah-token in each call. Only cipherKey and firmKey are required.
 
 
 
 ### Create tokens
 
 
-First thing you need is a cipherToken for your settings
+First thing you need is a strajah-token for your settings
 
 ```js
-const accessTokenCreator = cipherToken(settings);
+const accessTokenCreator = strajahToken(settings);
 ```
 
 After that you'll create a set for a given user which will contain data to be encoded in the token
@@ -100,24 +100,22 @@ decodedToken has the following properties
 - set: the data encoded within the token, contains: userId, expiresAtTimestamp, data and sessionId if enabled
 - error: if an error occurred during decoding
 
-The only one added by cipherToken is expiresAtTimestamp: at creation, gets the actual time and add to it the time expiration to calculate when will the token expire.
-Cipher token doesn't care if the token has expired or not.
+The only one added by strajah-token is __expiresAtTimestamp__: at creation, gets the actual time and add to it the time expiration to calculate when will the token expire.
+strajah-token doesn't care if the token has expired or not.
 
 
 ### Example
 
 ```js
-const cipherToken = require('cipherToken');
-
 const settings = {
     cipherKey: 'myCipherKey123',
     firmKey:  'myFirmKey123'
 };
 
-const accessTokenCreator = cipherToken(settings);
+const strajahToken = require('strajah-token')(settings);
 
-const cipheredToken = accessTokenCreator.create.userId('John Spartan').data('validData').encode();
-const decodedToken = accessTokenCreator.decode(cipheredToken);
+const cipheredToken = strajahToken.create.userId('John Spartan').data('validData').encode();
+const decodedToken = strajahToken.decode(cipheredToken);
 
 console.log(decodedToken.set.userId)
 console.log(decodedToken.set.expiresAtTimestamp)
